@@ -1,4 +1,4 @@
-# Open Source Python POS and Accounting Software
+# HH Version 0.1     Open Source Python POS and Accounting Software
 <h3>Vision</h3>
 <br />
 <p>
@@ -79,4 +79,3 @@
 <br />
 I have built this software using Python3. It uses <a href="https://github.com/PyMySQL/PyMySQL">PyMySQL</a> and <a href="https://wxpython.org/Phoenix/docs/html/index.html">WxPython</a>.
 <br />
-To understand the design start following the code starting from <a href="https://github.com/HH95/Open-Source-Python-POS-and-Accounting-Software/blob/master/mainInterface.py">mainInterface.py</a>.
