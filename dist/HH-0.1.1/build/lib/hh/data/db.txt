@@ -1,0 +1,5 @@
+localhost
+root
+
+salmanwholeseller
+utf8mb4
