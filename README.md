@@ -61,12 +61,18 @@
 	<li>All accounts mentioned above can be viewed for any date range</li>
 </ol>
 <br />
+<h4>ERP</h4>
+<br />
+<ol>
+	<li>Access rights and permissions of fellow users can be controlled through their login accounts</li>
+</ol>
+<br />
 <h4>Future Plans</h4>
 <br />
 <ol>
-	<li>Add ERP functionality to control access rights of employees</li>
 	<li>Add Depreciation and Inventory Valuation</li>
 	<li>Include BI Dashboard</li>
+	<li>Make Windows Executable</li>
 </ol>
 <br />
 <h3>Development and Technicalities</h3>
