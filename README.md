@@ -2,8 +2,7 @@
 <h3>Vision</h3>
 <br />
 <p>
-  Pakistan has small to medium scale business running on manual paper-based records. After investigation, I
-  have identified that the reluctance is channeled by the following reasons:
+  Pakistan has small to medium scale business running on manual paper-based records. After investigation, I have identified that the reluctance is channeled by the following reasons:
   <ol>
     <li>Complacency</li>
     <li>Fear of the unknown (software)</li>
@@ -11,15 +10,14 @@
     <li><b>Expensive Software</b></li>
     <li><b>Cost of updates</b></li>
   </ol>
-  Software vendors can charge unreasonable rates from their clients for updates to the software as long as these (unreasonable) rates 
-  are less than the cost of new software from another vendor. This practice borders on bullying and is fairly common place.
-  <br />
+  Software vendors can charge unreasonable rates from their clients for updates to the software as long as these (unreasonable) rates are less than the cost of new software from another vendor. This practice borders on bullying and is fairly common place.
+  <br /> <br />
   Sometimes updates are not even possible because the vendor has closed shop and their propritary code is not available.
-  <br />
+  <br /> <br />
   I have tried to tackle the last two issues, since they are within the scope of software. Something I meddle in.
-  <br />
+  <br /> <br />
   I have built an open source software which suits the needs of a small to medium scale business. It is completely free to build and deploy.
-  <br />
+  <br /> <br />
   My vision is to see the following changes in society and the business landscape:
   <ol>
     <li>More businesses keeping digital records</li>
