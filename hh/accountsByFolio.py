@@ -14,7 +14,6 @@ import wx.adv
 import re
 
 from connectToDb import connectToDB
-import accountStatmentMaker as asm
 
 conn = connectToDB()
 
@@ -26,7 +25,6 @@ class folioAccountsPanel ( wx.Panel ):
 	
 	def __init__( self, parent ):
 		self.selectedFolio = 'Cash'
-		self.tbl = []
 		
 		wx.Panel.__init__ ( self, parent, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		
@@ -39,21 +37,18 @@ class folioAccountsPanel ( wx.Panel ):
 		self.folios = self.fetchFolios()
 		
 		self.m_folioCombo = wx.ComboBox(self, size=wx.DefaultSize, choices= list(self.folios.keys()) )
+
 		########### Combo Box End
 		bSizerDate.Add (self.m_folioCombo, 1, wx.ALL|wx.EXPAND, 5 )
+
 		
 		########### Date Picker Start
-		self.m_startDate = wx.adv.DatePickerCtrl(self, size=(60,-1), style = wx.adv.DP_DROPDOWN | wx.adv.DP_SHOWCENTURY | wx.adv.DP_ALLOWNONE)
-		self.m_endDate = wx.adv.DatePickerCtrl(self, size=(60,-1), style = wx.adv.DP_DROPDOWN | wx.adv.DP_SHOWCENTURY | wx.adv.DP_ALLOWNONE)
+		self.m_startDate = wx.adv.DatePickerCtrl(self, size=(60,-1),dt=wx.DateTime.Now(), style = wx.adv.DP_DROPDOWN | wx.adv.DP_SHOWCENTURY | wx.adv.DP_ALLOWNONE)
+		self.m_endDate = wx.adv.DatePickerCtrl(self, size=(60,-1),dt=wx.DateTime.Now(), style = wx.adv.DP_DROPDOWN | wx.adv.DP_SHOWCENTURY | wx.adv.DP_ALLOWNONE)
 		########### Date Picker End
-		
-		########### Print Button Start
-		self.printButton = wx.Button(self, label="Print")
-		########### Print Button End
 		
 		bSizerDate.Add (self.m_startDate, 1, wx.ALL|wx.EXPAND, 5 )
 		bSizerDate.Add (self.m_endDate, 1, wx.ALL|wx.EXPAND, 5 )
-		bSizerDate.Add (self.printButton, 1, wx.ALL|wx.EXPAND, 5 )
 		
 		########### Cart Grid Start
 		self.m_journalGrid = wx.grid.Grid( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
@@ -117,10 +112,6 @@ class folioAccountsPanel ( wx.Panel ):
 		self.m_startDate.Bind(wx.adv.EVT_DATE_CHANGED, self.dateChangeHandler)
 		self.m_endDate.Bind(wx.adv.EVT_DATE_CHANGED, self.dateChangeHandler)
 		self.m_folioCombo.Bind(wx.EVT_COMBOBOX, self.folioChangeHandler)
-		self.printButton.Bind(wx.EVT_BUTTON, self.printStatement)
-		
-	def printStatement (self, event):
-		asm.makeAccountStatement(self.m_folioCombo.GetValue(), self.tbl)
 		
 	def folioChangeHandler (self, event):
 		self.selectedFolio = self.m_folioCombo.GetValue()
@@ -174,7 +165,7 @@ class folioAccountsPanel ( wx.Panel ):
 		if (self.selectedFolio[:8] == "Customer" and self.selectedFolio[-1:] == "R"):
 			computation = "SUM(Debit) - SUM(Credit)"
 		elif (self.selectedFolio[:8] == "Supplier" and self.selectedFolio[-1:] == "P"):
-			computation = "SUM(Debit) - SUM(Credit)"
+			computation = "SUM(Credit) - SUM(Debit)"
 		elif (self.selectedFolio == "Purchase"):
 			computation = "SUM(Debit) - SUM(Credit)"
 		elif (self.selectedFolio == "Sale"):
@@ -196,39 +187,19 @@ class folioAccountsPanel ( wx.Panel ):
 		
 		st = self.m_startDate.GetValue().Format("%F") + " 00:00:00"
 		et = self.m_endDate.GetValue().Format("%F") + " 23:59:59"
-		
-		# Fetching the last transaction and the carried forward balance
-		qry = 'SELECT MAX(gl.dateTime) as dateTime, %s as Balance FROM generalLedger gl WHERE gl.dateTime < "%s" and gl.headOfAc = %s' % (computation, st, self.folios[self.selectedFolio])
+		qry = '''SELECT 
+				gl.id, gl.dateTime, hoa.description, gl.headOfAc, gl.transactionType, gl.chequeNo, gl.Debit, 					gl.Credit, ( SELECT %s FROM generalLedger WHERE id <= gl.id and headOfAc = "%s" AND dateTime BETWEEN "%s" AND "%s" ) AS Balance 
+			FROM generalLedger gl, headOfAccounts hoa 
+			WHERE gl.headOfAc = hoa.id AND gl.dateTime BETWEEN "%s" AND "%s" AND hoa.id = "%s" LIMIT 500''' % ( computation, self.folios[self.selectedFolio], st, et, st, et, self.folios[self.selectedFolio] )
 		
 		con = connectToDB()
 		curs = con.cursor()
 		curs.execute(qry)
 		
-		r= curs.fetchone()
-		
-		self.m_journalGrid.SetCellValue(0, 1, str(r['dateTime'])[:11])
-		self.m_journalGrid.SetCellValue(0, 2, str(r['dateTime'])[11:])
-		self.m_journalGrid.SetCellValue(0, 5, "Carried Forward")
-		self.m_journalGrid.SetCellValue(0, 9, str(r['Balance']))
-		
-		self.tbl = []
-		self.tbl.append( [ str(r['dateTime'])[:11], str(r['dateTime'])[11:], "Carried Forward", '', '', '', str(r['Balance']) ] )
-		previousBalance = r['Balance'] if r['Balance'] else 0
-		##############
-		
-		qry = '''SELECT 
-				gl.id, gl.dateTime, hoa.description, gl.headOfAc, gl.transactionType, gl.chequeNo, gl.Debit, 					gl.Credit, ( SELECT %s + %s FROM generalLedger WHERE id <= gl.id and headOfAc = "%s" AND dateTime BETWEEN "%s" AND "%s" ) AS Balance 
-			FROM generalLedger gl, headOfAccounts hoa 
-			WHERE gl.headOfAc = hoa.id AND gl.dateTime BETWEEN "%s" AND "%s" AND hoa.id = "%s" LIMIT 500''' % ( computation, previousBalance, self.folios[self.selectedFolio], st, et, st, et, self.folios[self.selectedFolio] )
-		
-		curs = con.cursor()
-		curs.execute(qry)
-		
-		row = 1
+		row = 0
 		while (1):
 			r = curs.fetchone()
 			if (r is not None):
-				reportRow = []
 				x = re.search ("(?<=Customer)[0-9]*", r['description'])
 				if x is not None:
 					q = 'SELECT name FROM customer WHERE id = %s' % (x.group(0))
@@ -262,10 +233,6 @@ class folioAccountsPanel ( wx.Panel ):
 				#self.m_journalGrid.SetCellValue(row, 7, str(r['Debit']))
 				#self.m_journalGrid.SetCellValue(row, 8, str(r['Credit']))
 				self.m_journalGrid.SetCellValue(row, 9, str(r['Balance']))
-				
-				############
-				self.tbl.append( [ str(r['dateTime'])[:11], str(r['dateTime'])[11:], r['transactionType'], str(r['chequeNo']), self.m_journalGrid.GetCellValue(row, 7), self.m_journalGrid.GetCellValue(row, 8), str(r['Balance']) ] )
-				############
 				
 				row = row+1
 			else:

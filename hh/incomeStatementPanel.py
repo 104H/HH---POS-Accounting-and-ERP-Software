@@ -33,8 +33,8 @@ class incomeStatementPanel ( wx.Panel ):
 		bSizerGrid = wx.BoxSizer( wx.HORIZONTAL )
 		
 		########### Date Picker Start
-		self.m_startDate = wx.adv.DatePickerCtrl(self, size=(60,-1), style = wx.adv.DP_DROPDOWN | wx.adv.DP_SHOWCENTURY | wx.adv.DP_ALLOWNONE)
-		self.m_endDate = wx.adv.DatePickerCtrl(self, size=(60,-1), style = wx.adv.DP_DROPDOWN | wx.adv.DP_SHOWCENTURY | wx.adv.DP_ALLOWNONE)
+		self.m_startDate = wx.adv.DatePickerCtrl(self, size=(60,-1),dt=wx.DateTime.Now(), style = wx.adv.DP_DROPDOWN | wx.adv.DP_SHOWCENTURY | wx.adv.DP_ALLOWNONE)
+		self.m_endDate = wx.adv.DatePickerCtrl(self, size=(60,-1), dt=wx.DateTime.Now(),style = wx.adv.DP_DROPDOWN | wx.adv.DP_SHOWCENTURY | wx.adv.DP_ALLOWNONE)
 		########### Date Picker End
 		
 		bSizerDate.Add (self.m_startDate, 1, wx.ALL|wx.EXPAND, 5 )

@@ -1,36 +1,43 @@
 from connectToDb import connectToDB
 
-conn = connectToDB()
+
 
 import wx
 import wx.xrc
+import wx.grid
+import wx.adv
 import re
 
 import gLedgerFunctions as af
 from validators import numOnlyValidator
 
+conn = connectToDB()
+
+
 class GetData(wx.Dialog):
 	def __init__(self, parent):
 		
-		wx.Dialog.__init__(self, parent, wx.ID_ANY, "Manual Entry", size= (650,400))
+		wx.Dialog.__init__(self, parent, wx.ID_ANY, "Manual Entry", size= (650,600))
 		self.panel = wx.Panel(self,wx.ID_ANY)
 		
 		self.mainSizer = wx.BoxSizer( wx.VERTICAL )
 		
 		self.folios = self.fetchFolios()
-		
+
 		self.lblFolioD = wx.StaticText(self.panel, label="Folio (Debit)")
-		self.folioComboD = wx.ComboBox(self, size=wx.DefaultSize, choices= list(self.folios.keys()))
-		
+		self.folioComboD = wx.ComboBox(self.panel, id=wx.ID_ANY ,size=wx.DefaultSize, choices= list(self.folios.keys()) )
+		print(self.folioComboD.GetCount())
+
 		self.debitSizer = wx.BoxSizer( wx.HORIZONTAL )
 		self.debitSizer.Add( self.lblFolioD )
-		self.debitSizer.Add( self.folioComboD )
-		self.mainSizer.Add( self.debitSizer )
+		self.debitSizer.Add(self.folioComboD)
+
+		self.mainSizer.Add(self.debitSizer )
 		#self.folioC = wx.TextCtrl(self.panel, value="", pos=(130,70), size=(90,-1))
 		
 		self.lblFolioC = wx.StaticText(self.panel, label="Folio (Credit)")
-		self.folioComboC = wx.ComboBox(self, size=wx.DefaultSize, choices= list(self.folios.keys()))
-		
+		self.folioComboC = wx.ComboBox(self.panel, size=wx.DefaultSize, choices= list(self.folios.keys()))
+
 		self.creditSizer = wx.BoxSizer( wx.HORIZONTAL )
 		self.creditSizer.Add( self.lblFolioC )
 		self.creditSizer.Add( self.folioComboC )

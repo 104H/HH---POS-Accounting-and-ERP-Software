@@ -17,8 +17,8 @@ class purchasePanel (terminalPanel):
 	
 	def CheckOutFunc( self, event ):
 		amtPaid = self.makePopUpDate("Enter Amount Paid", "Amount Paid")
-		self.t.purchaseItems(amtPaid, float( self.billAfterDiscount.GetLabel() ))
 		self.clearCartGrid()
+		self.t.purchaseItems(amtPaid)
 	'''
 	def refundFunc( self, event ):
 		self.clearCartGrid()

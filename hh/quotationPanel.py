@@ -9,8 +9,8 @@ class quotationPanel (terminalPanel):
 	
 	def CheckOutFunc( self, event ):
 		expDate = self.makePopUpDate("Enter Expiry Date", "Expiry Date")
-		self.t.saveQuote(expDate, float( self.billAfterDiscount.GetLabel() ))
 		self.clearCartGrid()
+		self.t.saveQuote(expDate)
 	
 	def refundFunc( self, event ):
 		self.clearCartGrid()

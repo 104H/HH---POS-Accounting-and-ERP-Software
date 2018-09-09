@@ -61,7 +61,7 @@ class invoiceInfoPanel ( wx.Panel ):
 		self.m_invoiceGrid.SetColLabelValue( 0, u"ID" )
 		self.m_invoiceGrid.SetColLabelValue( 1, u"Date" )
 		self.m_invoiceGrid.SetColLabelValue( 2, u"Time" )
-		self.m_invoiceGrid.SetColLabelValue( 3, u"Amount After Discount" )
+		self.m_invoiceGrid.SetColLabelValue( 3, u"Amount" )
 		self.m_invoiceGrid.SetColLabelValue( 4, u"Amount Recieved" )
 		self.m_invoiceGrid.SetColLabelValue( 5, u"Bilty" )
 		self.m_invoiceGrid.SetColLabelValue( 6, u"Agency" )
@@ -88,7 +88,7 @@ class invoiceInfoPanel ( wx.Panel ):
 		self.m_invoiceGrid.Bind( wx.grid.EVT_GRID_CELL_LEFT_CLICK, self.updateCollectedMoney )
 		
 	def populateTable (self):
-		qry = 'select i.id, SUBSTRING(i.timeStamp, 1, 11), SUBSTRING(i.timeStamp, 12), i.amount - i.discount as amount, i.amountRecieved, i.transportKey, i.transportAgency, c.id, c.name, c.contact from customer c, invoice i where i.buyerId = c.id ORDER BY i.id DESC'
+		qry = 'select i.id, SUBSTRING(i.timeStamp, 1, 11), SUBSTRING(i.timeStamp, 12), i.amount, i.amountRecieved, i.transportKey, i.transportAgency, c.id, c.name, c.contact from customer c, invoice i where i.buyerId = c.id ORDER BY i.id DESC'
 		
 		con = connectToDB()
 		curs = con.cursor()

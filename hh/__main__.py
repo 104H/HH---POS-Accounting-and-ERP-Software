@@ -9,6 +9,8 @@ def main():
 	loginScreen(None).Show()
 	
 	app.MainLoop()
+
+	print('closed')
 	
 if __name__ == "__main__":
 	main()

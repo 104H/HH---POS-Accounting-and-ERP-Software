@@ -7,8 +7,6 @@ import wx.dataview
 
 from connectToDb import connectToDB
 
-import makeBarcodePanel as mbp
-
 class stockLevelsPanel ( wx.Panel ):
 	
 	def __init__( self, parent ):
@@ -16,17 +14,9 @@ class stockLevelsPanel ( wx.Panel ):
 
 		bSizer11 = wx.BoxSizer( wx.VERTICAL )
 
-		topSizer = wx.BoxSizer( wx.HORIZONTAL )
 		self.search = wx.TextCtrl( self, wx.ID_ANY, u"", wx.DefaultPosition, size=(-1, 30) )
 		self.search.Bind(wx.EVT_TEXT, self.searchInput)
-		
-		self.printBarcodes = wx.Button(self, label="Print Barcodes")
-		self.printBarcodes.Bind(wx.EVT_BUTTON, self.makeBc)
-		
-		topSizer.Add ( self.search, 2, wx.ALL|wx.EXPAND, 5 )
-		topSizer.Add ( self.printBarcodes, 1, wx.ALL|wx.EXPAND, 5 )
-		
-		bSizer11.Add(topSizer, 0, wx.ALL|wx.EXPAND, 5 )
+		bSizer11.Add ( self.search, 0, wx.ALL|wx.EXPAND, 5 )
 
 		self.m_productsGrid = wx.grid.Grid( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
 		
@@ -88,10 +78,6 @@ class stockLevelsPanel ( wx.Panel ):
 		self.SetSizer( bSizer11 )
 		self.Layout()
 		bSizer11.Fit( self )
-		
-	def makeBc (self, event):
-		dlg = mbp.GetData(self)
-		dlg.ShowModal()
 		
 	def tableChange (self, event):
 		r = event.GetRow()
