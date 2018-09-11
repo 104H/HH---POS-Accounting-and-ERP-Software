@@ -9,7 +9,6 @@ import time as t
 
 import gLedgerFunctions as af
 from validators import numOnlyValidator
-import invoiceMaker as im
 #import functions as f
 
 class GetData(wx.Dialog):
@@ -54,12 +53,10 @@ class GetData(wx.Dialog):
 		self.saveButton =wx.Button(self.panel, label="Save", pos=(110,420))
 		self.closeButton =wx.Button(self.panel, label="Cancel", pos=(250,420))
 		self.returnButton =wx.Button(self.panel, label="Return", pos=(390,420))
-		self.printInvoiceButton =wx.Button(self.panel, label="Print Invoice", pos=(530,420))
 		
 		self.saveButton.Bind(wx.EVT_BUTTON, self.SaveConnString)
 		self.closeButton.Bind(wx.EVT_BUTTON, self.OnQuit)
 		self.returnButton.Bind(wx.EVT_BUTTON, self.OnReturn)
-		self.printInvoiceButton.Bind(wx.EVT_BUTTON, self.makeInvoice)
 		
 		self.Bind(wx.EVT_CLOSE, self.OnQuit)
 		
@@ -117,43 +114,4 @@ class GetData(wx.Dialog):
 		if (transpKey != ''):
 			self.updateTranspKey(transpKey, transpAgency, self.iid)
 		self.Destroy()
-	
-	def makeInvoice (self, event):
-		conn = connectToDB()
-		
-		qry = 'select p.name, pi.quantity, pi.price, pi.discount from productinvoice pi, products p where pi.product = p.id and invoiceId = %s' % (self.iid)
-		
-		curs = conn.cursor()
-		curs.execute(qry)
-		r = curs.fetchone()
-		
-		prods = []
-		
-		while r is not None:
-			prods.append([ r['name'], '', int(r['quantity']), int(r['price']) + int(r['discount']), int(r['price']) ])
-			r = curs.fetchone()
-		
-		qry = 'select i.id, i.employeeid, i.timeStamp, i.amount, i.amountRecieved, i.discount, c.id, c.name, c.contact from customer c, invoice i where i.buyerId = c.id ORDER BY i.id DESC'
-		
-		curs = conn.cursor()
-		curs.execute(qry)
-		
-		r = curs.fetchone()
-		
-		im.imaker(str(self.iid), 
-		self.iid, 
-		r['employeeid'], 
-		r['c.id'], 
-		r['name'], 
-		r['contact'], 
-		prods, 
-		int(r['discount']), 
-		int(r['amountRecieved']), 
-		r['timeStamp'])
-		
-		import os
-		cmd = "lpr -P HP-LaserJet-M101-M106 " + str(self.iid)
-		os.system(cmd)
-		
-		self.Destroy()
-	
+

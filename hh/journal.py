@@ -5,6 +5,7 @@ import wx.grid
 import wx.adv
 import re
 
+#import manualJournalEntryPanel as mjep
 import manualJournalEntryPanel as mjep
 import newHeadOfAccount as nhoa
 
@@ -22,8 +23,8 @@ class journalPanel ( wx.Panel ):
 		bSizerGrid = wx.BoxSizer( wx.HORIZONTAL )
 		
 		########### Date Picker Start
-		self.m_startDate = wx.adv.DatePickerCtrl(self, size=(60,-1), style = wx.adv.DP_DROPDOWN | wx.adv.DP_SHOWCENTURY | wx.adv.DP_ALLOWNONE)
-		self.m_endDate = wx.adv.DatePickerCtrl(self, size=(60,-1), style = wx.adv.DP_DROPDOWN | wx.adv.DP_SHOWCENTURY | wx.adv.DP_ALLOWNONE)
+		self.m_startDate = wx.adv.DatePickerCtrl(self, size=(60,-1),dt=wx.DateTime.Now(), style = wx.adv.DP_DROPDOWN | wx.adv.DP_SHOWCENTURY | wx.adv.DP_ALLOWNONE)
+		self.m_endDate = wx.adv.DatePickerCtrl(self, size=(60,-1),dt=wx.DateTime.Now(), style = wx.adv.DP_DROPDOWN | wx.adv.DP_SHOWCENTURY | wx.adv.DP_ALLOWNONE)
 		
 		self.m_manEntryB = wx.Button( self, wx.ID_ANY, u"New Entry", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_manEntryB.Bind(wx.EVT_BUTTON, self.manEntry)
@@ -140,8 +141,8 @@ class journalPanel ( wx.Panel ):
 	def populateTable (self):
 		conn = connectToDB()
 		
-		#print(type(self.m_startDate.GetValue()))
-		#print(type(self.m_endDate.GetValue().Format("%F")))
+		#print(self.m_startDate.GetValue())
+		#print(self.m_endDate.GetValue().Format("%F"))
 		qry = 'SELECT gl.id, gl.dateTime, hoa.description, gl.headOfAc, gl.transactionType, gl.chequeNo, gl.Debit, gl.Credit FROM generalLedger gl, headOfAccounts hoa where gl.headOfAc = hoa.id and gl.dateTime BETWEEN "%s" AND "%s" ORDER BY gl.dateTime, id LIMIT 500' % ( self.m_startDate.GetValue().Format("%F") + " 00:00:00", self.m_endDate.GetValue().Format("%F") + " 23:59:59")
 		curs = conn.cursor()
 		curs.execute(qry)

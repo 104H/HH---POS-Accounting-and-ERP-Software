@@ -29,9 +29,8 @@ class cart:
 	def removeProduct (self, prod):
 		c = 0
 		for x in self.products:
-			if x.pid == prod:
-				self.products = self.products[:c] + self.products[c+1:]
-				return
+			if x == prod:
+				del self.products[c]
 			c = c +1
 	
 	def makeEmpty(self):
@@ -95,12 +94,12 @@ class terminal:
 		print(qry)
 		if (r is None):
 			qry = 'SELECT p.id FROM products p where p.barcode LIKE "%s"' % (productIdentifier)
-			print(qry)
+			print('inside cart.py class terminal findProduct: ' + str(qry))
 			curs.execute(qry)
 			r = curs.fetchone()
-		print(r)
+			print('inside cart.py class terminal print r when none: ' + str(r))
 		if r is not None:
-			print(r)
+			print('inside cart.py class terminal print r when not none : ' + str(r))
 			for p in self.cart.products:
 				if r['id'] == p.pid:
 					return False
@@ -192,7 +191,7 @@ class terminal:
 		return False
 	
 	def registerNewCustomer (self, name, contact):
-		qry = "INSERT INTO customer (name, contact) VALUES ('%s', '%s')" % (cName, cust)
+		qry = "INSERT INTO customer (name, contact) VALUES ('%s', '%s')" % (name, contact)
 		self.customerId = self.commitInsertQuery(qry)
 	
 	def fetchSupplierId (self, contact):
@@ -210,7 +209,7 @@ class terminal:
 		return False
 	
 	def registerNewSupplier (self, name, contact):
-		qry = "INSERT INTO supplier (name, contact) VALUES ('%s', '%s')" % (cName, cust)
+		qry = "INSERT INTO supplier (name, contact) VALUES ('%s', '%s')" % (name, contact)
 		self.supplierId = self.commitInsertQuery(qry)
 	
 	# ========== Cash Sale =================================
@@ -249,18 +248,16 @@ class terminal:
 	def cashSaleJournalEntry (self, saleId, bill, discount):
 		af.cashSaleEntry(bill, discount, saleId)
 	
-	def returnProducts (self, amt):
+	def returnProducts (self):
 		if (len(self.cart.products) == 0):
 			return
 		
 		bill = self.computeTotalBill()
 		discount = self.computeTotalDiscount()
 		
-		discount = discount + (bill - amt)
-		
-		returnId = self.recordReturn(amt, discount)
+		returnId = self.recordReturn(bill, discount)
 		self.recordProductsInReturn(returnId)
-		self.returnJournalEntry(returnId, amt, discount)
+		self.returnJournalEntry(returnId, bill, discount)
 		self.refresh()
 	
 	def recordReturn (self, bill, discount):
@@ -280,18 +277,16 @@ class terminal:
 	# ========== Cash Sale =================================
 	
 	# ========== Invoice =================================
-	def prepareInvoice (self, amtRecieved, billAfterDiscount):
+	def prepareInvoice (self, amtRecieved):
 		if (len(self.cart.products) == 0):
 			return
 		
 		bill = self.computeTotalBill()
 		discount = self.computeTotalDiscount()
 		
-		discount = discount + (bill - billAfterDiscount)
-		
 		invoiceId = self.recordInvoice(amtRecieved, bill, discount)
 		self.recordProductsInInvoice(invoiceId)
-		self.makeInvoice(invoiceId, bill - billAfterDiscount, amtRecieved)
+		self.makeInvoice(invoiceId)
 		self.makePrintout(invoiceId)
 		self.invoiceSaleJournalEntry(invoiceId, bill, discount, amtRecieved)
 		self.refresh()
@@ -312,11 +307,11 @@ class terminal:
 	def invoiceSaleJournalEntry (self, invoiceId, bill, discount, amtRecieved):
 		af.invoiceEntry (bill, discount, amtRecieved, self.customerId, invoiceId, cheque=1)
 	
-	def makeInvoice (self, invoiceId, discount, amountPaid):
+	def makeInvoice (self, invoiceId):
 		prods = []
 		for x in range(len(self.cart.products)):
 			prods.append([self.cart.products[x].name, '', self.cart.products[x].qty, self.cart.products[x].origPrice, self.cart.products[x].price])
-		im.imaker(str(invoiceId), invoiceId, self.operatorId, self.customerId, self.customerName, self.customerContact, prods, discount, amountPaid)
+		im.imaker(str(invoiceId), invoiceId, self.operatorId, self.customerId, self.customerName, self.customerContact, prods, discountNo=0)
 	
 	def makePrintout(self, filename):
 		cmd = "lpr -P HP-LaserJet-M101-M106 " + str(filename)
@@ -325,14 +320,12 @@ class terminal:
 	# ========== Invoice =================================
 	
 	# ========== Quotation =================================
-	def saveQuote (self, expDate, billAfterDiscount):
+	def saveQuote (self, expDate):
 		if (len(self.cart.products) == 0):
 			return
 		
 		bill = self.computeTotalBill()
 		discount = self.computeTotalDiscount()
-		
-		discount = discount + (bill - billAfterDiscount)
 		
 		quoteId = self.recordQuote(bill, discount, expDate)
 		self.recordProductsInQuotation(quoteId)
@@ -350,18 +343,16 @@ class terminal:
 	# ========== Quotation =================================
 	
 	# ========== Purchase =================================
-	def purchaseItems (self, amountPaid, billAfterDiscount):
+	def purchaseItems (self, amountPaid):
 		if (len(self.cart.products) == 0):
 			return
 		
 		bill = self.computeTotalBill()
 		discount = self.computeTotalDiscount()
 		
-		discount = discount + (bill - billAfterDiscount)
-		
 		purchaseId = self.recordPurchase(amountPaid, bill, discount)
 		self.recordProductsInPurchase(purchaseId)
-		self.makePurchaseInvoice(purchaseId, bill - billAfterDiscount)
+		self.makePurchaseInvoice(purchaseId)
 		self.purchaseJournalEntry (bill, discount, amountPaid, purchaseId)
 		self.refresh()
 		
@@ -378,11 +369,11 @@ class terminal:
 			
 			self.commitInsertQuery(qry)
 	
-	def makePurchaseInvoice (self, invoiceId, discount):
+	def makePurchaseInvoice (self, invoiceId):
 		prods = []
 		for x in range(len(self.cart.products)):
 			prods.append([self.cart.products[x].name, '', self.cart.products[x].qty, self.cart.products[x].origPrice, self.cart.products[x].price])
-		pim.imaker(str(invoiceId), invoiceId, self.operatorId, self.customerId, self.customerName, self.customerContact, prods, discount)
+		pim.imaker(str(invoiceId), invoiceId, self.operatorId, self.customerId, self.customerName, self.customerContact, prods, discountNo=0)
 	
 	def purchaseJournalEntry (self, bill, discount, amountPaid, purchaseId):
 		af.purchaseEntry (bill, discount, amountPaid, self.supplierId, purchaseId)

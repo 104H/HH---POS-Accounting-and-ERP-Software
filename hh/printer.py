@@ -45,21 +45,16 @@ def printReciept(cart, date, invoiceId, bill, discount):
 
 	# width of paper -> 48 chars
 	# Product
-	p.textln("No   | Product")
-	p.textln("Qty  | Price | Discount | T Disc  | Total Price ")
+	p.textln("No |Product |Qty  |Price |Discount |Total Price ")
 	p.textln("------------------------------------------------")
 
 	for prd in cart:
 		# if the name of the product exceeds 7 characters, print only the first 7
-		'''
 		if len(prd.name) > 7:
 			nm = prd.name[:7]
 		else:
 			nm = prd.name
-		'''
-		p.textln(str(prd.pid)
-		p.textln(prepareLine(prd.qty, prd.origPrice, (prd.origPrice - prd.price) * prd.qty, prd.price * prd.qty))
-		p.ln(1)
+		p.textln(prepareLine(prd.pid, nm, prd.qty, prd.origPrice, (prd.origPrice - prd.price) * prd.qty, prd.price * prd.qty))
 	#p.textln(prepareLine(4, 'Brush', 10, 200, 10000))
 	
 	'''
@@ -78,7 +73,7 @@ def printReciept(cart, date, invoiceId, bill, discount):
 	p.textln("------------------------------------------------")
 	p.textln("                     Notes                      ")
 
-	p.ln(3)
+	p.ln(1)
 
 	#p.set(align='center', bold=False, double_height=False, double_width=False)
 	#p.textln("Ganyani, Kirmani and Allahwala IT Consulting")
@@ -88,9 +83,11 @@ def printReciept(cart, date, invoiceId, bill, discount):
 
 	p.cut(mode='PART')
 	
-def prepareLine (qty, price, discount, tPrice):
+def prepareLine (pid, name, qty, price, discount, tPrice):
 	ln = ''
 	pid = str(pid)
+	ln = ln + preparePhrase(pid, 3)
+	ln = ln + preparePhrase(name, 8)
 	ln = ln + preparePhrase(qty, 5)
 	ln = ln + preparePhrase(price, 6)
 	ln = ln + preparePhrase(discount, 9)

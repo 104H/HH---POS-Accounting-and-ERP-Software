@@ -2,7 +2,7 @@ from datetime import datetime, date
 from pyinvoice.models import InvoiceInfo, ServiceProviderInfo, ClientInfo, Item, Transaction
 from pyinvoice.templates import SimpleInvoice
 
-def imaker(fName, id, duedate, clientId, clientName, clientMobileNumber, prods, discountNo, amtRecieved, dateTime=datetime.now()):
+def imaker(fName, id, duedate, clientId, clientName, clientMobileNumber, prods, discountNo):
 
 	#fname: filename
 	#id: invoice id, type: str or int or unicode
@@ -13,7 +13,6 @@ def imaker(fName, id, duedate, clientId, clientName, clientMobileNumber, prods, 
 	#prods is a list which makes the item table
 	#prods -> name, description price, quantity
 	#discountNo: passes into the function which sets the discount rate. type: int
-	#amtRecieved so far
 	
 
 	doc = SimpleInvoice(fName)
@@ -21,7 +20,7 @@ def imaker(fName, id, duedate, clientId, clientName, clientMobileNumber, prods, 
 	# Paid stamp, optional
 	doc.is_paid = False
 
-	doc.invoice_info = InvoiceInfo(id, dateTime, duedate)  # Invoice info, optional
+	doc.invoice_info = InvoiceInfo(id, datetime.now(), duedate)  # Invoice info, optional
 
 	# Service Provider Info, optional
 	doc.service_provider_info = ServiceProviderInfo(
@@ -44,8 +43,6 @@ def imaker(fName, id, duedate, clientId, clientName, clientMobileNumber, prods, 
 	# Tax rate, optional
 
 	doc.set_item_discount_rate(discountNo)  # 20%
-	
-	doc.set_amount_recieved(amtRecieved)
 
 
 	doc.finish()

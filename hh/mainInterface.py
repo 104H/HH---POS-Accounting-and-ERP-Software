@@ -125,7 +125,9 @@ class mainInterface ( wx.Frame ):
 		self.Centre( wx.BOTH )
 		
 		self.m_notebook1.Bind( wx.EVT_NOTEBOOK_PAGE_CHANGED, self.refreshStockLevels)
-	
+
+		self.Bind(wx.EVT_CLOSE, self.OnQuit)
+
 	def __del__( self ):
 		pass
 	def refreshStockLevels (self, event):
@@ -145,3 +147,7 @@ class mainInterface ( wx.Frame ):
 		curs.execute(qry)
 		con.commit()
 
+
+	def OnQuit(self, event):
+		# self.result_name = None
+		self.Destroy()

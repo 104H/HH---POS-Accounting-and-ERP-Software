@@ -9,8 +9,8 @@ class invoiceSalePanel (terminalPanel):
 	
 	def CheckOutFunc( self, event ):
 		amt = self.makePopUp("Enter Recieved Amount", "Amount Recieved")
-		self.t.prepareInvoice(amt, float( self.billAfterDiscount.GetLabel() ))
 		self.clearCartGrid()
+		self.t.prepareInvoice(amt)
 	
 	'''
 	def refundFunc( self, event ):

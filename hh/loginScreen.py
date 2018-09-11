@@ -53,8 +53,9 @@ class loginScreen ( wx.Frame ):
 			self.userName.SetValue("")
 			self.passwd.SetValue("")
 		else:
-			self.Destroy()
+			self.Close()
 			
-			app = wx.App()
+			# app = wx.App()
 			mainInterface(None, r['access'], r['id']).Show()
-			app.MainLoop()
+			# app.MainLoop()
+			print('else closed')
