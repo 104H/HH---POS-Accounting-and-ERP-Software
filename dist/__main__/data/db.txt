@@ -1,0 +1,6 @@
+localhost
+
+root
+
+softw
+utf8mb4
