@@ -30,22 +30,22 @@ class purchaseInfoPanel ( wx.Panel ):
 		self.m_purchaseGrid.EnableGridLines( True )
 		self.m_purchaseGrid.EnableDragGridSize( False )
 		self.m_purchaseGrid.SetMargins( 0, 0 )
-		
+
 		# Populate Table
-		col=0
+		row = 0
 		for x in p:
-			row=0
-			# if amount of invoice is smaller than the amount recieved yet, colour the cell red
-			if float(x['totalBill']) > float(x['amountPaid']):
-				self.m_purchaseGrid.SetCellBackgroundColour(row, 4, wx.Colour(255, 128, 128))
-			for y in list(x.values()):
-				self.m_purchaseGrid.SetCellValue(col, row, str(y))
-				row = row+1
-			col = col+1
+			col = 0
+			x = list(x.values())
+			if x[2] > x[3]:
+				self.m_purchaseGrid.SetCellBackgroundColour(row, 3, wx.Colour(255, 128, 128))
+			for y in x:
+				self.m_purchaseGrid.SetCellValue(row, col, str(y))
+				col = col + 1
+			row = row + 1
 		
 		# Columns
 		self.m_purchaseGrid.SetColSize( 0, 30 )
-		self.m_purchaseGrid.SetColSize( 1, 100 )
+		self.m_purchaseGrid.SetColSize( 1, 140 )
 		self.m_purchaseGrid.SetColSize( 2, 120 )
 		self.m_purchaseGrid.SetColSize( 3, 140 )
 		self.m_purchaseGrid.SetColSize( 4, 160 )
@@ -110,16 +110,16 @@ class purchaseInfoPanel ( wx.Panel ):
 		self.m_purchaseGrid.InsertRows(numRows=lenP)
 		
 		# Populate Table
-		col=0
+		row=0
 		for x in p:
-			row=0
+			col=0
 			x = list(x.values())
-			if x[3] > x[4]:
-				self.m_purchaseGrid.SetCellBackgroundColour(row, 4, wx.Colour(255, 128, 128))
+			if x[2] > x[3]:
+				self.m_purchaseGrid.SetCellBackgroundColour(row, 3, wx.Colour(255, 128, 128))
 			for y in x:
-				self.m_purchaseGrid.SetCellValue(col, row, str(y))
-				row = row+1
-			col = col+1
+				self.m_purchaseGrid.SetCellValue(row, col, str(y))
+				col = col+1
+			row = row+1
 	
 	def updateCollectedMoney (self, event):
 		iid = self.m_purchaseGrid.GetCellValue(event.GetRow(), 0)
@@ -154,15 +154,15 @@ class purchaseInfoPanel ( wx.Panel ):
 		lenP = len(p)
 		
 		self.m_purchaseGrid.InsertRows(numRows=lenP)
-		
+
 		# Populate Table
-		col=0
+		row = 0
 		for x in p:
-			row=0
+			col = 0
 			x = list(x.values())
-			if float(x[3]) > float(x[4]):
-				self.m_purchaseGrid.SetCellBackgroundColour(x[0], 4, wx.Colour(255, 128, 128))
+			if x[2] > x[3]:
+				self.m_purchaseGrid.SetCellBackgroundColour(row, 3, wx.Colour(255, 128, 128))
 			for y in x:
-				self.m_purchaseGrid.SetCellValue(col, row, str(y))
-				row = row+1
-			col = col+1
+				self.m_purchaseGrid.SetCellValue(row, col, str(y))
+				col = col + 1
+			row = row + 1
