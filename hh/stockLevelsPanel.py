@@ -31,14 +31,17 @@ class stockLevelsPanel ( wx.Panel ):
 		self.m_productsGrid.SetMargins( 0, 0 )
 		
 		# Populate Table
-		col=0
+		row=0
 		for x in p:
-			row=0
-			for y in list(x.values()):
-				self.m_productsGrid.SetCellValue(col, row, str(y))
-				row = row+1
-			col = col+1
-		
+			col=0
+			x = list(x.values())
+			if float(x[5]) > float(x[6]):
+				self.m_productsGrid.SetCellBackgroundColour(row, 6, wx.Colour(255, 128, 128))
+			for y in x:
+				self.m_productsGrid.SetCellValue(row, col, str(y))
+				col = col+1
+			row = row+1
+		#
 		# Columns
 		self.m_productsGrid.SetColSize( 0, 30 )
 		self.m_productsGrid.SetColSize( 1, 60 )
@@ -118,16 +121,20 @@ class stockLevelsPanel ( wx.Panel ):
 		lenP = len(p)
 		
 		self.m_productsGrid.InsertRows(numRows=lenP)
-		
+
 		# Populate Table
-		col=0
+		row = 0
 		for x in p:
-			row=0
-			for y in list(x.values()):
-				self.m_productsGrid.SetCellValue(col, row, str(y))
-				row = row+1
-			col = col+1
-	
+			col = 0
+			x = list(x.values())
+
+			if float(x[5]) > float(x[6]):
+				self.m_productsGrid.SetCellBackgroundColour(row, 6, wx.Colour(255, 128, 128))
+			for y in x:
+				self.m_productsGrid.SetCellValue(row, col, str(y))
+				col = col + 1
+			row = row + 1
+
 	def searchInput(self, event):
 		v = self.search.GetValue()
 		if v == "":
@@ -156,13 +163,13 @@ class stockLevelsPanel ( wx.Panel ):
 		self.m_productsGrid.InsertRows(numRows=lenP)
 		
 		# Populate Table
-		col=0
+		row=0
 		for x in p:
-			row=0
+			col=0
 			x = list(x.values())
-			#if float(x[3]) > float(x[4]):
-			#	self.m_productsGrid.SetCellBackgroundColour(x[0], 4, wx.Colour(255, 128, 128))
+			if float(x[5]) > float(x[6]):
+				self.m_productsGrid.SetCellBackgroundColour(row, 6, wx.Colour(255, 128, 128))
 			for y in x:
-				self.m_productsGrid.SetCellValue(col, row, str(y))
-				row = row+1
-			col = col+1
+				self.m_productsGrid.SetCellValue(row, col, str(y))
+				col = col+1
+			row = row+1
