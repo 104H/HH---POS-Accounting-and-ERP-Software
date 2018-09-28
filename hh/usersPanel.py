@@ -32,14 +32,14 @@ class usersPanel ( wx.Panel ):
 		self.usersGrid.SetMargins( 0, 0 )
 		
 		# Populate Table
-		col=0
+		row=0
 		for x in p:
-			row=0
+			col=0
 			# if amount of invoice is smaller than the amount recieved yet, colour the cell red
 			for y in list(x.values()):
-				self.usersGrid.SetCellValue(col, row, str(y))
-				row = row+1
-			col = col+1
+				self.usersGrid.SetCellValue(row, col, str(y))
+				col = col+1
+			row = row+1
 		
 		# Columns
 		self.usersGrid.SetColSize( 0, 30 )
