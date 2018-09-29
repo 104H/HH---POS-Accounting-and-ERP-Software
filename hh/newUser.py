@@ -9,26 +9,35 @@ import re
 class GetData(wx.Dialog):
 	def __init__(self, parent):
 		
-		wx.Dialog.__init__(self, parent, wx.ID_ANY, "New User Account", size= (500,500))
+		wx.Dialog.__init__(self, parent, wx.ID_ANY, "New User Account", size= (500,280))
 		self.panel = wx.Panel(self,wx.ID_ANY)
 		
 		self.mainSizer = wx.BoxSizer( wx.VERTICAL )
 		
 		self.lblName = wx.StaticText(self.panel, label="Username")
-		self.name = wx.TextCtrl(self.panel, value="", size=(90,-1))
+		self.name = wx.TextCtrl(self.panel, value="", size=(180,-1))
 		
-		self.nameSizer = wx.BoxSizer( wx.HORIZONTAL )
-		self.nameSizer.Add( self.lblName )
-		self.nameSizer.Add( self.name )
-		self.mainSizer.Add( self.nameSizer )
+		self.labelSizer = wx.BoxSizer( wx.VERTICAL )
+
 		
 		self.lblPasswd = wx.StaticText(self.panel, label="Password")
-		self.passwd = wx.TextCtrl(self.panel, value="", size=(90,-1))
+		self.passwd = wx.TextCtrl(self.panel, value="", size=(180,-1))
 		
-		self.passwdSizer = wx.BoxSizer( wx.HORIZONTAL )
-		self.passwdSizer.Add( self.lblPasswd )
-		self.passwdSizer.Add( self.passwd )
-		self.mainSizer.Add( self.passwdSizer )
+		self.textSizer = wx.BoxSizer( wx.VERTICAL )
+
+		self.labelSizer.Add(self.lblName, 1 , wx.ALL,8 )
+		self.labelSizer.Add(self.lblPasswd, 1, wx.ALL,8 )
+
+		self.textSizer.Add(self.name, 1 , wx.ALL,4)
+		self.textSizer.Add(self.passwd,1 , wx.ALL,4)
+
+		self.credentialBoxSizer = wx.BoxSizer(wx.HORIZONTAL)
+
+		self.credentialBoxSizer.Add(self.labelSizer, 1, wx.ALL,4)
+		self.credentialBoxSizer.Add(self.textSizer, 2, wx.ALL,4)
+
+		self.mainSizer.Add(self.credentialBoxSizer )
+
 		
 		self.cashSale = wx.CheckBox(self.panel, wx.ID_ANY, label="cashSale", style=0, name="cashSale")
 		self.invoice = wx.CheckBox(self.panel, wx.ID_ANY, label="invoice", style=0, name="invoice")
@@ -48,45 +57,49 @@ class GetData(wx.Dialog):
 		self.users = wx.CheckBox(self.panel, wx.ID_ANY, label="users", style=0, name="users")
 		#self. = wx.CheckBox(self.panel, wx.ID_ANY, label="", style=0, name="")
 		
-		self.checkboxSizer1 = wx.BoxSizer( wx.HORIZONTAL )
-		self.checkboxSizer1.Add( self.cashSale )
-		self.checkboxSizer1.Add( self.invoice )
-		self.checkboxSizer1.Add( self.quote )
-		self.checkboxSizer1.Add( self.purchase )
+		self.checkboxSizer1 = wx.BoxSizer( wx.VERTICAL )
+		self.checkboxSizer1.Add( self.cashSale, 1, wx.ALL,4 )
+		self.checkboxSizer1.Add( self.invoice, 1, wx.ALL,4 )
+		self.checkboxSizer1.Add( self.quote , 1, wx.ALL,4)
+		self.checkboxSizer1.Add( self.purchase , 1, wx.ALL,4)
 		
-		self.checkboxSizer2 = wx.BoxSizer( wx.HORIZONTAL )
-		self.checkboxSizer2.Add( self.stockLevels )
-		self.checkboxSizer2.Add( self.cashSaleInfo )
-		self.checkboxSizer2.Add( self.invoiceInfo )
-		self.checkboxSizer2.Add( self.purchaseInfo )
-		self.checkboxSizer2.Add( self.quoteInfo )
+		self.checkboxSizer2 = wx.BoxSizer( wx.VERTICAL )
+		self.checkboxSizer2.Add( self.stockLevels , 1, wx.ALL,4)
+		self.checkboxSizer2.Add( self.cashSaleInfo, 1, wx.ALL,4 )
+		self.checkboxSizer2.Add( self.invoiceInfo , 1, wx.ALL,4)
+		self.checkboxSizer2.Add( self.purchaseInfo , 1, wx.ALL,4)
+		self.checkboxSizer2.Add( self.quoteInfo , 1, wx.ALL,4)
 		
-		self.checkboxSizer3 = wx.BoxSizer( wx.HORIZONTAL )
-		self.checkboxSizer3.Add( self.customerInfo )
-		self.checkboxSizer3.Add( self.supplierInfo )
+		self.checkboxSizer3 = wx.BoxSizer( wx.VERTICAL )
+		self.checkboxSizer3.Add( self.customerInfo , 1, wx.ALL,4)
+		self.checkboxSizer3.Add( self.supplierInfo , 1, wx.ALL,4)
 		
-		self.checkboxSizer4 = wx.BoxSizer( wx.HORIZONTAL )
-		self.checkboxSizer4.Add( self.journal )
-		self.checkboxSizer4.Add( self.accountsByFolio )
-		self.checkboxSizer4.Add( self.controlAccount )
-		self.checkboxSizer4.Add( self.incomeStatement )
+		self.checkboxSizer4 = wx.BoxSizer( wx.VERTICAL )
+		self.checkboxSizer4.Add( self.journal , 1, wx.ALL,4)
+		self.checkboxSizer4.Add( self.accountsByFolio , 1, wx.ALL,4)
+		self.checkboxSizer4.Add( self.controlAccount , 1, wx.ALL,4)
+		self.checkboxSizer4.Add( self.incomeStatement , 1, wx.ALL,4)
 		
-		self.checkboxSizer5 = wx.BoxSizer( wx.HORIZONTAL )
-		self.checkboxSizer5.Add( self.users )
+		self.checkboxSizer5 = wx.BoxSizer( wx.VERTICAL )
+		self.checkboxSizer5.Add( self.users , 1, wx.ALL,4)
 		#self.checkboxSizer.Add(  )
-		self.mainSizer.Add( self.checkboxSizer1 )
-		self.mainSizer.Add( self.checkboxSizer2 )
-		self.mainSizer.Add( self.checkboxSizer3 )
-		self.mainSizer.Add( self.checkboxSizer4 )
-		self.mainSizer.Add( self.checkboxSizer5 )
+		self.checkCollectionBoxSizer = wx.BoxSizer(wx.HORIZONTAL)
+
+		self.checkCollectionBoxSizer.Add( self.checkboxSizer1 ,1 ,wx.LEFT,8)
+		self.checkCollectionBoxSizer.Add( self.checkboxSizer2 )
+		self.checkCollectionBoxSizer.Add( self.checkboxSizer3 )
+		self.checkCollectionBoxSizer.Add( self.checkboxSizer4 )
+		self.checkCollectionBoxSizer.Add( self.checkboxSizer5 )
+
+		self.mainSizer.Add(self.checkCollectionBoxSizer)
 		
 		self.saveButton = wx.Button(self.panel, label="Save")
 		self.closeButton = wx.Button(self.panel, label="Cancel")
 		
 		self.buttonSizer = wx.BoxSizer( wx.HORIZONTAL )
-		self.buttonSizer.Add( self.saveButton )
-		self.buttonSizer.Add( self.closeButton )
-		self.mainSizer.Add( self.buttonSizer )
+		self.buttonSizer.Add( self.saveButton ,1 , wx.ALL, 8)
+		self.buttonSizer.Add( self.closeButton,1 , wx.ALL, 8 )
+		self.mainSizer.Add( self.buttonSizer, 1, wx.ALIGN_CENTER,2 )
 		
 		self.SetSizer( self.mainSizer )
 		self.Layout()
@@ -105,15 +118,42 @@ class GetData(wx.Dialog):
 		self.Destroy()
 	
 	def SaveConnString(self, event):
+
+
 		username = self.name.GetValue()
 		passwd = self.passwd.GetValue()
-		access = str(int(self.cashSale.GetValue())) + str(int(self.invoice.GetValue())) + str(int(self.quote.GetValue())) + str(int(self.purchase.GetValue())) + str(int(self.stockLevels.GetValue())) + str(int(self.cashSaleInfo.GetValue())) + str(int(self.invoiceInfo.GetValue())) + str(int(self.purchaseInfo.GetValue())) + str(int(self.quoteInfo.GetValue())) + str(int(self.customerInfo.GetValue())) + str(int(self.supplierInfo.GetValue())) + str(int(self.journal.GetValue())) + str(int(self.accountsByFolio.GetValue())) + str(int(self.controlAccount.GetValue())) + str(int(self.incomeStatement.GetValue())) + str(int(self.users.GetValue()))
-		
-		qry = 'INSERT INTO users (username, password, access) VALUES ("%s", "%s", "%s")' % (username, passwd, access)
-		conn = connectToDB()
-		curs = conn.cursor()
-		curs.execute(qry)
-		conn.commit()
-		
-		self.Destroy()
+
+		if username != '' and passwd != '':
+
+			access = str(int(self.cashSale.GetValue())) \
+					 + str(int(self.invoice.GetValue())) \
+					 + str(int(self.quote.GetValue())) \
+					 + str(int(self.purchase.GetValue())) \
+					 + str(int(self.stockLevels.GetValue())) \
+					 + str(int(self.cashSaleInfo.GetValue())) \
+					 + str(int(self.invoiceInfo.GetValue())) \
+					 + str(int(self.purchaseInfo.GetValue())) \
+					 + str(int(self.quoteInfo.GetValue())) \
+					 + str(int(self.customerInfo.GetValue())) \
+					 + str(int(self.supplierInfo.GetValue())) \
+					 + str(int(self.journal.GetValue())) \
+					 + str(int(self.accountsByFolio.GetValue())) \
+					 + str(int(self.controlAccount.GetValue())) \
+					 + str(int(self.incomeStatement.GetValue())) \
+					 + str(int(self.users.GetValue()))
+			int_access = int(access)
+			if int_access != 0:
+				qry = 'INSERT INTO users (username, password, access) VALUES ("%s", "%s", "%s")' % (username, passwd, access)
+				conn = connectToDB()
+				curs = conn.cursor()
+				curs.execute(qry)
+				conn.commit()
+
+				self.Destroy()
+			else:
+				y = wx.MessageDialog(self, "Please tick atleast one checkbox", "Notice", wx.OK)
+				y.ShowModal()
+		else:
+			x = wx.MessageDialog(self, "Please enter both username and password", "Notice", wx.OK)
+			x.ShowModal()
 

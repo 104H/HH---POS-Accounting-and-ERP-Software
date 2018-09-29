@@ -21,6 +21,9 @@ class terminalPanel ( wx.Panel ):
 
         wx.Panel.__init__ ( self, parent, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 
+
+
+
         self.SetSizeHints( wx.Size( -1,-1 ), wx.DefaultSize )
         self.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_CAPTIONTEXT ) )
 
@@ -29,23 +32,13 @@ class terminalPanel ( wx.Panel ):
         self.papa = wx.Panel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
         self.papa.SetFont( wx.Font( 14, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, "Arial" ) )
 
-        bSizerMain = wx.BoxSizer(wx.VERTICAL)
+        self.gridBagSizer = wx.GridBagSizer(10,10)
 
-        topMainSizer = wx.BoxSizer(wx.VERTICAL)
 
-        # searchComponentSizer = wx.BoxSizer(wx.VERTICAL)
-        # customerComponentSizer = wx.BoxSizer(wx.VERTICAL)
-        #
-        # returnClearBtnsSizer = wx.BoxSizer(wx.VERTICAL)
-        # btnsComponentSizer = wx.BoxSizer(wx.HORIZONTAL)
-        #
-        # searCustoSizer = wx.BoxSizer(wx.HORIZONTAL)
-        #
-        # totalComponentSizer = wx.BoxSizer(wx.HORIZONTAL)
 
 
         ########### Cart Grid Start
-        self.productsGrid = wx.grid.Grid(self.papa,wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
+        self.productsGrid = wx.grid.Grid(self.papa,wx.ID_ANY, wx.DefaultPosition, (700,-1), 0 )
         self.productsGrid.CreateGrid( 99, 6 )
         self.productsGrid.EnableEditing( True )
         self.productsGrid.EnableGridLines( True )
@@ -53,12 +46,12 @@ class terminalPanel ( wx.Panel ):
         self.productsGrid.SetMargins( 0, 0 )
         self.productsGrid.SetRowLabelSize( 20 )
 
-        self.productsGrid.SetColSize( 0, 60 )
-        self.productsGrid.SetColSize( 1, 120 )
-        self.productsGrid.SetColSize( 2, 180 )
-        self.productsGrid.SetColSize( 3, 240 )
-        self.productsGrid.SetColSize( 4, 300 )
-        self.productsGrid.SetColSize( 5, 360 )
+        self.productsGrid.SetColSize( 0, 40)
+        self.productsGrid.SetColSize( 1, 140)
+        self.productsGrid.SetColSize( 2, 80)
+        self.productsGrid.SetColSize( 3, 120)
+        self.productsGrid.SetColSize( 4, 120)
+        self.productsGrid.SetColSize( 5, 140)
 
         self.productsGrid.SetColLabelValue( 0, u"ID" )
         self.productsGrid.SetColLabelValue( 1, u"Name" )
@@ -71,63 +64,41 @@ class terminalPanel ( wx.Panel ):
         self.productsGrid.SetRowLabelAlignment( wx.ALIGN_CENTRE, wx.ALIGN_CENTRE )
         ########### Cart Grid End
 
-        self.bSizerPG = wx.BoxSizer( wx.HORIZONTAL )
-        self.bSizerPG.Add( self.productsGrid, 1, wx.EXPAND|wx.ALL, 5 )
 
-        self.inputTC = wx.SearchCtrl(parent=self.papa, id=wx.ID_ANY, value=u"", pos=wx.DefaultPosition, size=wx.DefaultSize, style=0 )
+        self.inputTC = wx.SearchCtrl(parent=self.papa, id=wx.ID_ANY, value=u"", pos=wx.DefaultPosition, size=(300,36), style=0 )
         self.inputTC.SetEditable( True )
-        self.inputTC.SetDescriptiveText( "Search for Customer or Product" )
+        self.inputTC.SetDescriptiveText("Search for Customer or Product" )
+        self.inputTC.SetFont(wx.Font(14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, "Calibri"))
 
-        '''
-        searchSize = self.inputTC.GetSize()
-        x, y = self.inputTC.GetScreenPosition()
-        y = searchSize[1] + y
-        '''
+
+
 
 
         self.suggestionList = wx.ListBox(parent=self.papa,
-                                         choices=self.suggestionCandidatesAsList(self.inputTC.GetValue())
+                                         choices=self.suggestionCandidatesAsList(self.inputTC.GetValue()),
+                                         size=(640,200)
                                         )
-        # self.suggestionList.SetTransparent(wx.IMAGE_ALPHA_OPAQUE)
-        # self.suggestionList.Hide()
-        # self.suggestionList.Raise()
-        #self.suggestionList.Hide()
 
-
-        searchComponentSizer = wx.BoxSizer(wx.VERTICAL)
-
-        searchComponentSizer.Add(self.inputTC,0,wx.EXPAND|wx.ALL,1)
-        searchComponentSizer.Add(self.suggestionList,0,wx.EXPAND|wx.ALL,1)
 
 
         self.customerHeading = wx.StaticText( self.papa, wx.ID_ANY, u"Customer Information", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.customerName = wx.StaticText( self.papa, wx.ID_ANY, u"Name:   ", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.customerContact = wx.StaticText( self.papa, wx.ID_ANY, u"Contact:   ", wx.DefaultPosition, wx.DefaultSize, 0 )
-        #self.customerBalance = wx.StaticText( self.papa, wx.ID_ANY, u"Balance:   ", wx.DefaultPosition, wx.DefaultSize, 0 )
+
         self.newCustomerButton = wx.Button( self.papa, wx.ID_ANY, u"Select Customer", wx.DefaultPosition, wx.DefaultSize, 0 )
 
+        self.totalBill = wx.StaticText(self.papa, wx.ID_ANY, u"Total:   0000000", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.discountTC = wx.StaticText(self.papa, wx.ID_ANY, u"Discount:   0000000", wx.DefaultPosition,
+                                        wx.DefaultSize, 0)
+        self.billAfterDiscount = wx.StaticText(self.papa, wx.ID_ANY, u"After Discount:   0000000", wx.DefaultPosition,
+                                               wx.DefaultSize, 0)
 
-
-        self.bSizerTopSecondRowCustInfo = wx.BoxSizer( wx.VERTICAL )
-        self.bSizerTopSecondRowCustInfo.Add( self.customerHeading, 1, wx.EXPAND|wx.ALL, 5 )
-        self.bSizerTopSecondRowCustInfo.Add( self.customerName, 1, wx.EXPAND|wx.ALL, 5 )
-        self.bSizerTopSecondRowCustInfo.Add( self.customerContact, 1, wx.EXPAND|wx.ALL, 5 )
-        #self.bSizerTopSecondRowCustInfo.Add( self.customerBalance, 1, wx.EXPAND|wx.ALL, 5 )
-        self.bSizerTopSecondRowCustInfo.Add( self.newCustomerButton, 1, wx.EXPAND|wx.ALL, 5 )
-
-        self.totalBill = wx.StaticText( self.papa, wx.ID_ANY, u"Total:   0000000", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.discountTC = wx.StaticText( self.papa, wx.ID_ANY, u"Discount:   0000000", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.billAfterDiscount = wx.StaticText( self.papa, wx.ID_ANY, u"After Discount:   0000000", wx.DefaultPosition, wx.DefaultSize, 0 )
-
-
-        self.totalBill.SetFont( wx.Font( 18, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, "Arial" ) )
-        self.discountTC.SetFont( wx.Font( 18, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, "Arial" ) )
-        self.billAfterDiscount.SetFont( wx.Font( 18, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, "Arial" ) )
-
-        self.bSizerTopSecondRowCartInfo = wx.BoxSizer( wx.VERTICAL )
-        self.bSizerTopSecondRowCartInfo.Add( self.totalBill, 1, wx.EXPAND|wx.ALL|wx.ALIGN_CENTRE_VERTICAL, 5 )
-        self.bSizerTopSecondRowCartInfo.Add( self.discountTC, 1, wx.EXPAND|wx.ALL, 5 )
-        self.bSizerTopSecondRowCartInfo.Add( self.billAfterDiscount, 2, wx.ALIGN_CENTRE_VERTICAL, 5 )
+        self.totalBill.SetFont(
+            wx.Font(16, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, "Arial"))
+        self.discountTC.SetFont(
+            wx.Font(16, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, "Arial"))
+        self.billAfterDiscount.SetFont(
+            wx.Font(16, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, "Arial"))
 
         self.transactionButton = wx.Button( self.papa, wx.ID_ANY, transactionButtonName, wx.DefaultPosition, wx.DefaultSize, 0 )
         self.returnButton = wx.Button( self.papa, wx.ID_ANY, u"Return", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -135,37 +106,61 @@ class terminalPanel ( wx.Panel ):
 
         self.transactionButton.SetFont( wx.Font( 18, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, "Arial" ) )
 
-        self.bSizerTopSecondRowControls = wx.BoxSizer( wx.VERTICAL )
-        self.bSizerTopSecondRowControls.Add( self.transactionButton, 3, wx.EXPAND|wx.ALL, 5 )
-        self.bSizerTopSecondRowControls.Add( self.returnButton, 2, wx.EXPAND|wx.ALL, 5 )
-        self.bSizerTopSecondRowControls.Add( self.cleanCartButton, 2, wx.EXPAND|wx.ALL, 5 )
+        # layout new implemen
 
-        self.bSizerTopSecondRow = wx.BoxSizer( wx.HORIZONTAL )
-        self.bSizerTopSecondRow.Add ( self.bSizerTopSecondRowCustInfo, 3, wx.EXPAND|wx.ALL, 5 )
-        self.bSizerTopSecondRow.Add ( self.bSizerTopSecondRowCartInfo, 3, wx.EXPAND|wx.ALL, 5 )
-        self.bSizerTopSecondRow.Add ( self.bSizerTopSecondRowControls, 4, wx.EXPAND|wx.ALL, 5 )
+        # BUTTONS!!
+        self.btnHbox = wx.BoxSizer(wx.HORIZONTAL)
+        self.btnHbox.Add(self.cleanCartButton,1, wx.EXPAND|wx.ALL, 2)
+        self.btnHbox.Add(self.returnButton,1, wx.EXPAND|wx.ALL, 2)
+        self.btnHbox.Add(self.transactionButton,1, wx.EXPAND|wx.ALL, 2)
 
-        self.bSizerTop = wx.BoxSizer( wx.VERTICAL )
-        # self.bSizerTop.Add(searchComponentSizer,1,wx.EXPAND|wx.ALL,5)
-        # self.bSizerTop.Add ( self.inputTC, 0, wx.EXPAND|wx.ALL, 5 )
-        #self.bSizerTop.Add ( self.suggestionList, 0, wx.EXPAND|wx.ALL, 5 )
-        # self.bSizerTop.Add ( self.bSizerTopSecondRow, 4, wx.EXPAND|wx.ALL, 5 )
-
-        # bSizerMain.Add(self.searchBoxSizer, 1, wx.EXPAND|wx.ALL,5)
-        #self.bSizerTop.Add( self.inputTC, 0, wx.EXPAND | wx.ALL, 5)
-        self.bSizerTop.Add ( self.bSizerTopSecondRow, 1, wx.EXPAND | wx.ALL, 5)
-        self.bSizerTop.Add(searchComponentSizer,0, wx.EXPAND | wx.ALL, 5)
-        #self.bSizerTop.Add ( self.suggestionList, 0, wx.EXPAND|wx.ALL, 5 )
-
-        bSizerMain.Add( self.bSizerTop, 2, wx.EXPAND | wx.ALL, 5)
-        bSizerMain.Add( self.bSizerPG, 6, wx.EXPAND|wx.ALL, 5 )
+        #sale info layout box
+        self.saleInfoLabelVbox = wx.BoxSizer(wx.VERTICAL)
+        self.saleInfoLabelVbox.Add(self.totalBill,1, wx.EXPAND|wx.ALL, 2 )
+        self.saleInfoLabelVbox.Add(self.discountTC,1, wx.EXPAND|wx.ALL, 2 )
+        self.saleInfoLabelVbox.Add(self.billAfterDiscount,1, wx.EXPAND|wx.ALL, 2 )
 
 
 
-        self.papa.SetSizer( bSizerMain )
+
+        #customer info layout box
+
+        self.custInfoLabelVbox = wx.BoxSizer(wx.VERTICAL)
+        self.custInfoLabelVbox.Add(self.customerHeading,1, wx.EXPAND|wx.ALL, 3 )
+        self.custInfoLabelVbox.Add(self.customerName,1, wx.EXPAND|wx.ALL, 3 )
+        self.custInfoLabelVbox.Add(self.customerContact,1, wx.EXPAND|wx.ALL, 3 )
+        self.custInfoLabelVbox.Add(self.newCustomerButton,1, wx.EXPAND|wx.ALL, 3 )
+
+
+
+
+
+        self.SearchComponent = wx.BoxSizer(wx.VERTICAL)
+        self.SearchComponent.Add(self.inputTC,1, wx.EXPAND|wx.RIGHT, 4 )
+        self.SearchComponent.Add(self.suggestionList,flag=wx.RIGHT,border=4)
+
+
+        self.leftVerticalBox = wx.BoxSizer(wx.VERTICAL)
+
+        self.leftVerticalBox.Add(self.SearchComponent,1, wx.EXPAND|wx.ALL, 4)
+        self.leftVerticalBox.Add(self.custInfoLabelVbox,2, wx.EXPAND|wx.ALL, 4)
+        self.leftVerticalBox.Add(self.saleInfoLabelVbox,2, wx.EXPAND|wx.ALL, 10)
+        self.leftVerticalBox.Add(self.btnHbox,1, wx.EXPAND|wx.ALL, 4 )
+
+        self.rightVerticalBox = wx.BoxSizer(wx.VERTICAL)
+        self.rightVerticalBox.Add(self.productsGrid, 1, wx.EXPAND|wx.ALL,4)
+
+
+        self.mainHorizontalBox = wx.BoxSizer(wx.HORIZONTAL)
+        self.mainHorizontalBox.Add(self.leftVerticalBox)
+        self.mainHorizontalBox.Add(self.rightVerticalBox)
+
+
+
+        self.papa.SetSizer( self.mainHorizontalBox )
         self.papa.Layout()
-        bSizerMain.Fit( self.papa )
-        bSizerMyFrame1.Add( self.papa, 1, wx.EXPAND |wx.ALL, 5 )
+        self.mainHorizontalBox.Fit( self.papa )
+        bSizerMyFrame1.Add( self.papa, 1, wx.EXPAND |wx.ALL, 2 )
 
         self.SetSizer( bSizerMyFrame1 )
         self.Layout()
@@ -183,7 +178,7 @@ class terminalPanel ( wx.Panel ):
 
 
         self.transactionButton.Bind( wx.EVT_BUTTON, self.CheckOutFunc )
-        self.returnButton.Bind( wx.EVT_BUTTON, self.refundFunc )
+        #self.returnButton.Bind( wx.EVT_BUTTON, self.refundFunc )
         self.cleanCartButton.Bind( wx.EVT_BUTTON, self.clearEverything )
 
         self.productsGrid.Bind(wx.grid.EVT_GRID_CELL_CHANGED, self.cartChange)
@@ -344,6 +339,7 @@ class terminalPanel ( wx.Panel ):
         self.billAfterDiscount.SetLabel( "After Discount:  " + str( self.t.getCart().computeTotalBill() ))
 
     def clearCartGrid (self):
+        print("inside clearCartGrid which comes late")
         for x in range(self.t.numberOfItems()):
             self.productsGrid.SetCellValue(x, 0, '')
             self.productsGrid.SetCellValue(x, 1, '')
@@ -361,6 +357,7 @@ class terminalPanel ( wx.Panel ):
         #self.customerBalance.SetLabel('Balance:  ')
 
     def clearEverything (self, event=None):
+        print("inside clearEverything")
         self.clearCartGrid()
         self.t.refresh()
 

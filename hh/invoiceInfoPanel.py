@@ -32,17 +32,16 @@ class invoiceInfoPanel ( wx.Panel ):
 		self.m_invoiceGrid.SetMargins( 0, 0 )
 		
 		# Populate Table
-		col=0
+		row=0
 		for x in p:
-			row=0
-			# if amount of invoice is smaller than the amount recieved yet, colour the cell red
-			if float(x['amount']) > float(x['amountRecieved']):
-				self.m_invoiceGrid.SetCellTextColour(row, 4, wx.Colour(255, 128, 128))
-			for y in list(x.values()):
-				self.m_invoiceGrid.SetCellValue(col, row, str(y))
-				row = row+1
-			col = col+1
-		
+			col=0
+			x = list(x.values())
+			if float(x[3]) > float(x[4]):
+				self.m_invoiceGrid.SetCellBackgroundColour(row, 4, wx.Colour(255, 128, 128))
+			for y in x:
+				self.m_invoiceGrid.SetCellValue(row, col, str(y))
+				col = col+1
+			row = row+1
 		# Columns
 		self.m_invoiceGrid.SetColSize( 0, 30 )
 		self.m_invoiceGrid.SetColSize( 1, 100 )
@@ -113,17 +112,17 @@ class invoiceInfoPanel ( wx.Panel ):
 		self.m_invoiceGrid.InsertRows(numRows=lenP)
 		
 		# Populate Table
-		col=0
+		row=0
 		for x in p:
-			row=0
+			col=0
 			x = list(x.values())
-			if float(x[3]) < float(x[4]):
+			if float(x[3]) > float(x[4]):
 				self.m_invoiceGrid.SetCellBackgroundColour(row, 4, wx.Colour(255, 128, 128))
 			for y in x:
-				self.m_invoiceGrid.SetCellValue(col, row, str(y))
-				row = row+1
-			col = col+1
-	
+				self.m_invoiceGrid.SetCellValue(row, col, str(y))
+				col = col+1
+			row = row+1
+        #
 	def updateCollectedMoney (self, event):
 		iid = self.m_invoiceGrid.GetCellValue(event.GetRow(), 0)
 		cid = self.m_invoiceGrid.GetCellValue(event.GetRow(), 7)
@@ -160,13 +159,13 @@ class invoiceInfoPanel ( wx.Panel ):
 		self.m_invoiceGrid.InsertRows(numRows=lenP)
 		
 		# Populate Table
-		col=0
+		row=0
 		for x in p:
-			row=0
+			col=0
 			x = list(x.values())
 			if float(x[3]) > float(x[4]):
-				self.m_invoiceGrid.SetCellBackgroundColour(x[0], 4, wx.Colour(255, 128, 128))
+				self.m_invoiceGrid.SetCellBackgroundColour(row, 4, wx.Colour(255, 128, 128))
 			for y in x:
-				self.m_invoiceGrid.SetCellValue(col, row, str(y))
-				row = row+1
-			col = col+1
+				self.m_invoiceGrid.SetCellValue(row, col, str(y))
+				col = col+1
+			row = row+1
