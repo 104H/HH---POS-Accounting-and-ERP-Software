@@ -41,10 +41,14 @@ class saleInfoPanel ( wx.Panel ):
 		
 		# Columns
 		self.m_saleInfoGrid.SetColSize( 0, 30 )
-		self.m_saleInfoGrid.SetColSize( 1, 60 )
+		self.m_saleInfoGrid.SetColSize( 1, 150 )
 		self.m_saleInfoGrid.SetColSize( 2, 90 )
-		self.m_saleInfoGrid.SetColSize( 3, 120 )
-		#self.m_saleInfoGrid.AutoSizeColumns()
+		self.m_saleInfoGrid.SetColSize( 3, 120)
+		self.m_saleInfoGrid.SetColSize( 4, 120)
+		self.m_saleInfoGrid.SetColSize( 5, 120)
+		self.m_saleInfoGrid.SetColSize( 6, 120)
+		self.m_saleInfoGrid.SetColSize( 7, 120)
+
 		self.m_saleInfoGrid.EnableDragColMove( True )
 		self.m_saleInfoGrid.EnableDragColSize( True )
 		self.m_saleInfoGrid.SetColLabelSize( 30 )
