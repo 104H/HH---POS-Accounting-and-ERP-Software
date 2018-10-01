@@ -73,8 +73,8 @@ class controlAccountPanel ( wx.Panel ):
 		self.m_journalGrid.SetColSize( 9, 300 )
 		'''
 		
-		self.m_journalGrid.SetColSize( 0, 50 )
-		self.m_journalGrid.SetColSize( 1, 100 )
+		self.m_journalGrid.SetColSize( 0, 150 )
+		self.m_journalGrid.SetColSize( 1, 150 )
 		
 		self.m_journalGrid.SetColLabelValue( 0, u"Head Of Account" )
 		self.m_journalGrid.SetColLabelValue( 1, u"Amount" )
@@ -116,7 +116,11 @@ class controlAccountPanel ( wx.Panel ):
 			elif x == 1:
 				computation = "SUM(gl.Debit) - SUM(gl.Credit)"
 				
-			qry = 'SELECT hoa.description, %s as amt FROM generalLedger gl, headOfAccounts hoa WHERE gl.headOfAc = hoa.id AND gl.dateTime BETWEEN "%s" AND "%s" AND hoa.computation = %s GROUP BY gl.headOfAc' % (computation, self.m_startDate.GetValue().Format("%F") + " 00:00:00", self.m_endDate.GetValue().Format("%F") + " 23:59:59", str(x))
+			qry = 'SELECT hoa.description, %s as amt FROM generalLedger gl ' \
+				  'INNER JOIN headOfAccounts hoa ' \
+				  'ON gl.headOfAc = hoa.id ' \
+				  'WHERE gl.dateTime BETWEEN "%s" AND "%s" AND hoa.computation = %s ' \
+				  'GROUP BY gl.headOfAc' % (computation, self.m_startDate.GetValue().Format("%F") + " 00:00:00", self.m_endDate.GetValue().Format("%F") + " 23:59:59", str(x))
 			curs = conn.cursor()
 			curs.execute(qry)
 		
