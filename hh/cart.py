@@ -27,11 +27,15 @@ class cart:
 		self.products.append(prod)
 	
 	def removeProduct (self, prod):
-		c = 0
-		for x in self.products:
-			if x == prod:
-				del self.products[c]
-			c = c +1
+
+
+		for index, x in enumerate(self.products):
+
+			if str(x.pid) == str(prod):
+
+				del self.products[index]
+
+
 	
 	def makeEmpty(self):
 		self.products = []
@@ -136,6 +140,7 @@ class terminal:
 		self.cart.addProduct(pid, name, qty, sellingPrice)
 		
 	def removeFromCart (self, pid):
+
 		self.cart.removeProduct(pid)
 	
 	def computeTotalBill(self):

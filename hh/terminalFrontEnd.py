@@ -38,8 +38,8 @@ class terminalPanel ( wx.Panel ):
 
 
         ########### Cart Grid Start
-        self.productsGrid = wx.grid.Grid(self.papa,wx.ID_ANY, wx.DefaultPosition, (700,-1), 0 )
-        self.productsGrid.CreateGrid( 99, 6 )
+        self.productsGrid = wx.grid.Grid(self.papa,wx.ID_ANY, wx.DefaultPosition, (800,-1), 0 )
+        self.productsGrid.CreateGrid( 99, 6)
         self.productsGrid.EnableEditing( True )
         self.productsGrid.EnableGridLines( True )
         self.productsGrid.EnableDragGridSize( False )
@@ -47,11 +47,12 @@ class terminalPanel ( wx.Panel ):
         self.productsGrid.SetRowLabelSize( 20 )
 
         self.productsGrid.SetColSize( 0, 40)
-        self.productsGrid.SetColSize( 1, 140)
+        self.productsGrid.SetColSize( 1, 180)
         self.productsGrid.SetColSize( 2, 80)
         self.productsGrid.SetColSize( 3, 120)
         self.productsGrid.SetColSize( 4, 120)
         self.productsGrid.SetColSize( 5, 140)
+
 
         self.productsGrid.SetColLabelValue( 0, u"ID" )
         self.productsGrid.SetColLabelValue( 1, u"Name" )
@@ -59,6 +60,7 @@ class terminalPanel ( wx.Panel ):
         self.productsGrid.SetColLabelValue( 3, u"Unit Price" )
         self.productsGrid.SetColLabelValue( 4, u"Total Discount" )
         self.productsGrid.SetColLabelValue( 5, u"Total Price" )
+
 
         self.productsGrid.SetColLabelAlignment( wx.ALIGN_CENTRE, wx.ALIGN_CENTRE )
         self.productsGrid.SetRowLabelAlignment( wx.ALIGN_CENTRE, wx.ALIGN_CENTRE )
@@ -76,7 +78,7 @@ class terminalPanel ( wx.Panel ):
 
         self.suggestionList = wx.ListBox(parent=self.papa,
                                          choices=self.suggestionCandidatesAsList(self.inputTC.GetValue()),
-                                         size=(640,200)
+                                         size=(520,200)
                                         )
 
 
@@ -112,7 +114,7 @@ class terminalPanel ( wx.Panel ):
         self.btnHbox = wx.BoxSizer(wx.HORIZONTAL)
         self.btnHbox.Add(self.cleanCartButton,1, wx.EXPAND|wx.ALL, 2)
         self.btnHbox.Add(self.returnButton,1, wx.EXPAND|wx.ALL, 2)
-        self.btnHbox.Add(self.transactionButton,1, wx.EXPAND|wx.ALL, 2)
+        self.btnHbox.Add(self.transactionButton,2, wx.EXPAND|wx.ALL, 2)
 
         #sale info layout box
         self.saleInfoLabelVbox = wx.BoxSizer(wx.VERTICAL)
@@ -148,12 +150,12 @@ class terminalPanel ( wx.Panel ):
         self.leftVerticalBox.Add(self.btnHbox,1, wx.EXPAND|wx.ALL, 4 )
 
         self.rightVerticalBox = wx.BoxSizer(wx.VERTICAL)
-        self.rightVerticalBox.Add(self.productsGrid, 1, wx.EXPAND|wx.ALL,4)
+        self.rightVerticalBox.Add(self.productsGrid, 1,wx.ALL,4)
 
 
         self.mainHorizontalBox = wx.BoxSizer(wx.HORIZONTAL)
-        self.mainHorizontalBox.Add(self.leftVerticalBox)
-        self.mainHorizontalBox.Add(self.rightVerticalBox)
+        self.mainHorizontalBox.Add(self.leftVerticalBox, 2, wx.EXPAND,0)
+        self.mainHorizontalBox.Add(self.rightVerticalBox, 3, wx.EXPAND,0)
 
 
 
@@ -196,10 +198,13 @@ class terminalPanel ( wx.Panel ):
     def determineParty (self, event):
         dlg = nc.GetData(self.papa, self.t)
         dlg.ShowModal()
-
-        if (self.t.customerId != 0):
+        print('before if')
+        if (self.t.customerId != -1):
+            print('inside if')
             self.customerName.SetLabel("Name:  " + self.t.customerName)
             self.customerContact.SetLabel("Contact:  "+self.t.customerContact)
+
+
 
     def showSearchSuggestion (self, event):
         print("showSearchSuggestion")
@@ -225,19 +230,51 @@ class terminalPanel ( wx.Panel ):
         r = event.GetRow()
         c = event.GetCol()
 
+        for x in range(self.t.numberOfItems()):
+            print(str(self.t.getCartProducts()[x].pid) + " " + str(self.t.getCartProducts()[x].name) + " " + str(self.t.getCartProducts()[x].qty))
+
+
+        qty = self.productsGrid.GetCellValue(r, c)
+
         if not self.productsGrid.GetCellValue(r, c).isdigit():
             self.productsGrid.SetCellValue(r, c, event.GetString())
             return
 
+
+
+
         if (c == 2):
             # if quantity was changed
-            x = self.t.increaseQty( int(self.productsGrid.GetCellValue(r, 0)), int(self.productsGrid.GetCellValue(r, 2))-self.t.getCartProducts()[r].qty )
-            if x == True:
-                self.productsGrid.SetCellValue(r, 5, str( self.t.getCartProducts()[r].qty * self.t.getCartProducts()[r].price ))
-                self.productsGrid.SetCellValue(r, 4, str( self.t.getCartProducts()[r].qty * ( self.t.getCartProducts()[r].origPrice - self.t.getCartProducts()[r].price ) ))
-            if type(x) == type(int()):
-                self.alert("Only "+str(x)+" are available", '')
-                self.productsGrid.SetCellValue(r, 2, event.GetString())
+            if (qty == str(0)):
+                self.t.removeFromCart(self.productsGrid.GetCellValue(r, 0))
+                for x in range(self.t.numberOfItems() + 1):
+                    self.productsGrid.SetCellValue(x, 0, '')
+                    self.productsGrid.SetCellValue(x, 1, '')
+                    self.productsGrid.SetCellValue(x, 2, '')
+                    self.productsGrid.SetCellValue(x, 3, '')
+                    self.productsGrid.SetCellValue(x, 4, '')
+                    self.productsGrid.SetCellValue(x, 5, '')
+
+                self.totalBill.SetLabel('Total:   0000000')
+                self.discountTC.SetLabel("Discount:  0000000")
+                self.billAfterDiscount.SetLabel("After Discount:  0000000")
+
+                self.dumpCartInDvlc()
+
+
+                # for x in range(self.t.numberOfItems()):
+                #     print(
+                #         str(self.t.getCartProducts()[x].pid) + " " + str(self.t.getCartProducts()[x].name) + " " + str(
+                #             self.t.getCartProducts()[x].qty))
+            else:
+
+                x = self.t.increaseQty( int(self.productsGrid.GetCellValue(r, 0)), int(self.productsGrid.GetCellValue(r, 2))-self.t.getCartProducts()[r].qty )
+                if x == True:
+                    self.productsGrid.SetCellValue(r, 5, str( self.t.getCartProducts()[r].qty * self.t.getCartProducts()[r].price ))
+                    self.productsGrid.SetCellValue(r, 4, str( self.t.getCartProducts()[r].qty * ( self.t.getCartProducts()[r].origPrice - self.t.getCartProducts()[r].price ) ))
+                if type(x) == type(int()):
+                    self.alert("Only "+str(x)+" are available", '')
+                    self.productsGrid.SetCellValue(r, 2, event.GetString())
 
         if (c == 3):
             # if unit price was changed
@@ -263,6 +300,12 @@ class terminalPanel ( wx.Panel ):
         self.totalBill.SetLabel( "Total:  " + str( self.t.getCart().computeTotalBill() + self.t.getCart().computeTotalDiscount() ))
         self.discountTC.SetLabel( "Discount:  " + str( self.t.getCart().computeTotalDiscount() ))
         self.billAfterDiscount.SetLabel( "After Discount:  " + str( self.t.getCart().computeTotalBill() ))
+
+        for x in range(self.t.numberOfItems()):
+            print(str(self.t.getCartProducts()[x].pid) + " " + str(self.t.getCartProducts()[x].name) + " " + str(self.t.getCartProducts()[x].qty))
+
+        print("end of change cart")
+
 
     def suggestionCandidates (self, searchString):
         qry = 'SELECT products.name, products.codeName, products.costPrice, products.sellingPrice, products.barcode FROM `currentinventory`, `products` WHERE products.id = currentinventory.productId AND codeName LIKE "%'+str(searchString)+'%"'
@@ -327,6 +370,7 @@ class terminalPanel ( wx.Panel ):
         x.ShowModal()
 
     def dumpCartInDvlc (self):
+        print("inside dump")
         for x in range(self.t.numberOfItems()):
             self.productsGrid.SetCellValue(x, 0, str( self.t.getCartProducts()[x].pid ))
             self.productsGrid.SetCellValue(x, 1, str( self.t.getCartProducts()[x].name ))
@@ -334,6 +378,7 @@ class terminalPanel ( wx.Panel ):
             self.productsGrid.SetCellValue(x, 3, str( self.t.getCartProducts()[x].price ))
             self.productsGrid.SetCellValue(x, 4, str( self.t.getCartProducts()[x].origPrice - self.t.getCartProducts()[x].price ))
             self.productsGrid.SetCellValue(x, 5, str( self.t.getCartProducts()[x].qty * self.t.getCartProducts()[x].price ))
+
         self.totalBill.SetLabel( "Total:  " + str( self.t.getCart().computeTotalBill() + self.t.getCart().computeTotalDiscount() ))
         self.discountTC.SetLabel( "Discount:  " + str( self.t.getCart().computeTotalDiscount() ))
         self.billAfterDiscount.SetLabel( "After Discount:  " + str( self.t.getCart().computeTotalBill() ))
@@ -365,12 +410,13 @@ class terminalPanel ( wx.Panel ):
         dlg = np.GetData(self.papa, bc)
         dlg.ShowModal()
 
-    def identifyParty (self, inS):
-        if not(self.t.fetchCustomerId(inS)):
-            dlg = nc.GetData(self.papa, inS)
-            dlg.ShowModal()
-        self.customerName.SetLabel(self.t.customerName)
-        self.customerContact.SetLabel(self.t.customerContact)
+    # def identifyParty (self, inS):
+    #     if not(self.t.fetchCustomerId(inS)):
+    #         dlg = nc.GetData(self.papa, inS)
+    #         dlg.ShowModal()
+    #     self.customerName.SetLabel(self.t.customerName)
+    #     print(self.t.customerName)
+    #     self.customerContact.SetLabel(self.t.customerContact)
 
         '''self.t.fetchCustomerId(inS)
             self.customerName.SetLabel(self.t.customerName)
