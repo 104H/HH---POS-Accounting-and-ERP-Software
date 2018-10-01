@@ -10,7 +10,7 @@ class GetData(wx.Dialog):
     def __init__(self, parent, terminalObj):
         self.t = terminalObj
     	
-        wx.Dialog.__init__(self, parent, wx.ID_ANY, "Name Input", size= (650,260))
+        wx.Dialog.__init__(self, parent, wx.ID_ANY, "Name Input", size= (650,300))
         self.panel = wx.Panel(self,wx.ID_ANY)
 
         self.lblName = wx.StaticText(self.panel, label="Name", pos=(20,20))
@@ -47,12 +47,14 @@ class GetData(wx.Dialog):
                 #self.previousBal.SetEditable(False)
                 self.saveButton.Disable()
                 #self.customerContact.SetLabel(self.t.customerContact)
+
+                self.Destroy()
         else:
                 self.name.SetValue("")
                 self.name.SetEditable(True)
                 #self.previousBal.SetEditable(True)
                 self.saveButton.Enable()
-                self.t.customerId = 0
+                self.t.customerId = -1
 	
     def OnQuit(self, event):
         self.result_name = None
