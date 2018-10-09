@@ -127,12 +127,27 @@ class controlAccountPanel ( wx.Panel ):
 			while (1):
 				r = curs.fetchone()
 				if (r is not None):
-					self.m_journalGrid.SetCellValue(row, 0, r['description'])
+					self.m_journalGrid.SetCellValue(row, 0, self.transformHOAtoName(r['description']))
 					self.m_journalGrid.SetCellValue(row, 1, str(r['amt']))
 					row = row + 1
 				else:
 					break
-				
-				
-				
-				
+
+	def transformHOAtoName(self, desc):
+		x = re.search("(?<=Customer)[0-9]*", desc)
+		if x is not None:
+			q = 'SELECT name FROM customer WHERE id = %s' % (x.group(0))
+			c = conn.cursor()
+			c.execute(q)
+			cust = c.fetchone()
+			return cust['name'] + " A/C Recievable"
+
+		x = re.search("(?<=Supplier)[0-9]*", desc)
+		if x is not None:
+			q = 'SELECT name FROM supplier WHERE id = %s' % (x.group(0))
+			c = conn.cursor()
+			c.execute(q)
+			cust = c.fetchone()
+			return cust['name'] + " A/C Payable"
+		return desc
+

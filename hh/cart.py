@@ -233,8 +233,12 @@ class terminal:
 		self.recordProductsInSale(saleId)
 		self.cashSaleJournalEntry(saleId, amt, discount)
 		#printInvoice(t.strftime("%d-%m-%y", t.localtime()), i)
-		pr.printReciept(self.cart.products, t.strftime("%d-%m-%y", t.localtime()), saleId, amt, bill-amt)
+		isprinter = pr.printReciept(self.cart.products, t.strftime("%d-%m-%y", t.localtime()), saleId, amt, bill-amt)
+		if isprinter is None:
+			return isprinter
 		self.refresh()
+		return isprinter
+
 	
 	def recordSale (self, bill, discount):
 		qry = 'INSERT INTO `sales` (customer, totalBill, discount, preparedBy) VALUES (%d, %d, %d, %s)' % (self.customerId, bill, discount, self.operatorId)

@@ -106,6 +106,7 @@ class usersPanel ( wx.Panel ):
 				row = row+1
 			col = col+1
 	def deleteUser (self, event):
+
 		x = wx.MessageDialog(self, "Are you sure you want to delete this user?", "Delete User", wx.OK|wx.CANCEL)
 		if x.ShowModal() == wx.ID_OK:
 			qry = 'DELETE FROM users WHERE id = %s' % (self.usersGrid.GetCellValue(event.GetRow(), 0))

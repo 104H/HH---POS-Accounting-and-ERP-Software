@@ -135,10 +135,11 @@ class incomeStatementPanel ( wx.Panel ):
 		###### Cost of Goods
 		qry = 'SELECT inventory from inventoryVal WHERE dateTime BETWEEN "%s" AND "%s"' % (self.m_startDate.GetValue().Format("%F") + " 00:00:00", self.m_startDate.GetValue().Format("%F") + " 23:59:59")
 		print(qry)
-		curs.execute(qry)
+		#curs.execute(qry)
 		print(self.m_startDate.GetValue().Format("%F")+ " 00:00:00")
-		openInv = curs.fetchone()['inventory']
-		print(openInv)
+		if curs.execute(qry):
+			openInv = curs.fetchone()['inventory']
+			print(openInv)
 		
 		qry = 'SELECT inventory from inventoryVal WHERE dateTime BETWEEN "%s" AND "%s"' % (self.m_endDate.GetValue().Format("%F") + " 00:00:00", self.m_endDate.GetValue().Format("%F") + " 23:59:59")
 		curs.execute(qry)

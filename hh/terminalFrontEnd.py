@@ -48,10 +48,10 @@ class terminalPanel ( wx.Panel ):
 
         self.productsGrid.SetColSize( 0, 40)
         self.productsGrid.SetColSize( 1, 180)
-        self.productsGrid.SetColSize( 2, 80)
+        self.productsGrid.SetColSize( 2, 100)
         self.productsGrid.SetColSize( 3, 120)
         self.productsGrid.SetColSize( 4, 120)
-        self.productsGrid.SetColSize( 5, 140)
+        self.productsGrid.SetColSize( 5, 180)
 
 
         self.productsGrid.SetColLabelValue( 0, u"ID" )
