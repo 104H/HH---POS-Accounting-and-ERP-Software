@@ -11,3 +11,4 @@ hh/build/__main__/*
 bin/*
 
 .idea/*
+hh/app/*
