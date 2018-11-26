@@ -73,7 +73,7 @@ class incomeStatementPanel ( wx.Panel ):
 		self.m_journalGrid.SetColSize( 9, 300 )
 		'''
 		
-		self.m_journalGrid.SetColSize( 0, 80 )
+		self.m_journalGrid.SetColSize( 0, 160 )
 		self.m_journalGrid.SetColSize( 1, 160 )
 		
 		#self.m_journalGrid.SetColLabelValue( 0, u"Head Of Account" )
@@ -134,8 +134,12 @@ class incomeStatementPanel ( wx.Panel ):
 		
 		###### Cost of Goods
 		qry = 'SELECT inventory from inventoryVal WHERE dateTime BETWEEN "%s" AND "%s"' % (self.m_startDate.GetValue().Format("%F") + " 00:00:00", self.m_startDate.GetValue().Format("%F") + " 23:59:59")
-		curs.execute(qry)
-		openInv = curs.fetchone()['inventory']
+		print(qry)
+		#curs.execute(qry)
+		print(self.m_startDate.GetValue().Format("%F")+ " 00:00:00")
+		if curs.execute(qry):
+			openInv = curs.fetchone()['inventory']
+			print(openInv)
 		
 		qry = 'SELECT inventory from inventoryVal WHERE dateTime BETWEEN "%s" AND "%s"' % (self.m_endDate.GetValue().Format("%F") + " 00:00:00", self.m_endDate.GetValue().Format("%F") + " 23:59:59")
 		curs.execute(qry)

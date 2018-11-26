@@ -73,8 +73,8 @@ class controlAccountPanel ( wx.Panel ):
 		self.m_journalGrid.SetColSize( 9, 300 )
 		'''
 		
-		self.m_journalGrid.SetColSize( 0, 50 )
-		self.m_journalGrid.SetColSize( 1, 100 )
+		self.m_journalGrid.SetColSize( 0, 150 )
+		self.m_journalGrid.SetColSize( 1, 150 )
 		
 		self.m_journalGrid.SetColLabelValue( 0, u"Head Of Account" )
 		self.m_journalGrid.SetColLabelValue( 1, u"Amount" )
@@ -116,19 +116,38 @@ class controlAccountPanel ( wx.Panel ):
 			elif x == 1:
 				computation = "SUM(gl.Debit) - SUM(gl.Credit)"
 				
-			qry = 'SELECT hoa.description, %s as amt FROM generalLedger gl, headOfAccounts hoa WHERE gl.headOfAc = hoa.id AND gl.dateTime BETWEEN "%s" AND "%s" AND hoa.computation = %s GROUP BY gl.headOfAc' % (computation, self.m_startDate.GetValue().Format("%F") + " 00:00:00", self.m_endDate.GetValue().Format("%F") + " 23:59:59", str(x))
+			qry = 'SELECT hoa.description, %s as amt FROM generalLedger gl ' \
+				  'INNER JOIN headOfAccounts hoa ' \
+				  'ON gl.headOfAc = hoa.id ' \
+				  'WHERE gl.dateTime BETWEEN "%s" AND "%s" AND hoa.computation = %s ' \
+				  'GROUP BY gl.headOfAc' % (computation, self.m_startDate.GetValue().Format("%F") + " 00:00:00", self.m_endDate.GetValue().Format("%F") + " 23:59:59", str(x))
 			curs = conn.cursor()
 			curs.execute(qry)
 		
 			while (1):
 				r = curs.fetchone()
 				if (r is not None):
-					self.m_journalGrid.SetCellValue(row, 0, r['description'])
+					self.m_journalGrid.SetCellValue(row, 0, self.transformHOAtoName(r['description']))
 					self.m_journalGrid.SetCellValue(row, 1, str(r['amt']))
 					row = row + 1
 				else:
 					break
-				
-				
-				
-				
+
+	def transformHOAtoName(self, desc):
+		x = re.search("(?<=Customer)[0-9]*", desc)
+		if x is not None:
+			q = 'SELECT name FROM customer WHERE id = %s' % (x.group(0))
+			c = conn.cursor()
+			c.execute(q)
+			cust = c.fetchone()
+			return cust['name'] + " A/C Recievable"
+
+		x = re.search("(?<=Supplier)[0-9]*", desc)
+		if x is not None:
+			q = 'SELECT name FROM supplier WHERE id = %s' % (x.group(0))
+			c = conn.cursor()
+			c.execute(q)
+			cust = c.fetchone()
+			return cust['name'] + " A/C Payable"
+		return desc
+

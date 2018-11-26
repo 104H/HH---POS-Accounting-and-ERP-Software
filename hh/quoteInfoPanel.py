@@ -49,7 +49,7 @@ class quoteInfoPanel ( wx.Panel ):
 		self.m_quoteInfoGrid.SetColSize( 2, 120 )
 		self.m_quoteInfoGrid.SetColSize( 3, 140 )
 		self.m_quoteInfoGrid.SetColSize( 4, 160 )
-		self.m_quoteInfoGrid.SetColSize( 5, 180 )
+		self.m_quoteInfoGrid.SetColSize( 5, 80 )
 		self.m_quoteInfoGrid.SetColSize( 6, 200 )
 		self.m_quoteInfoGrid.SetColSize( 7, 220 )
 		self.m_quoteInfoGrid.SetColSize( 8, 240 )

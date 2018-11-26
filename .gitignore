@@ -1,0 +1,14 @@
+hh/dist/__main__/*
+hh/__pycache__/*
+
+__pycache__/*
+
+dist/*
+
+build/*
+hh/build/__main__/*
+
+bin/*
+
+.idea/*
+hh/app/*

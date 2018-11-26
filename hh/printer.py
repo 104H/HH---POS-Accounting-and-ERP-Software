@@ -16,7 +16,7 @@ def printReciept(cart, date, invoiceId, bill, discount):
 	p = connectToPrinter()
 	
 	if p is None:
-		return
+		return None
 	
 	'''
 	p.set(align='center', bold=True, double_height=True, double_width=True)
